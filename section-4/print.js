@@ -1,14 +1,14 @@
 const chalk = require('chalk')
 
-s = (txt) => {
+const s = (txt) => {
   console.log(chalk.green.inverse(txt))
 }
 
-w = (txt) => {
+const w = (txt) => {
   console.log(chalk.yellow.inverse(txt))
 }
 
-e = (txt) => {
+const e = (txt) => {
   console.log(chalk.red.inverse(txt))
 }
 

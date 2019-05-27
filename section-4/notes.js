@@ -5,7 +5,7 @@ const print = require('./print')
  * Loads the notes file
  * @returns {object} - the parsed notes file's content
  */
-_loadNotes = () => {
+const _loadNotes = () => {
   try {
     const dataBuffer = fs.readFileSync('notes.json')
     const dataJson = dataBuffer.toString()
@@ -21,7 +21,7 @@ _loadNotes = () => {
  * 
  * @param {string} note - the note itself to be saved
  */
-_saveNote = (note) => {
+const _saveNote = (note) => {
   const dataJson = JSON.stringify(note)
   fs.writeFileSync('notes.json', dataJson)
 }
@@ -33,7 +33,7 @@ _saveNote = (note) => {
  * @param {string} title - the title of the note
  * @returns {boolean} - if there is the title in the document
  */
-_isPresent = (notes, title) => {
+const _isPresent = (notes, title) => {
   return notes.find(n => n.title === title)
 }
 
@@ -42,7 +42,7 @@ _isPresent = (notes, title) => {
  * 
  * @returns {object} - the notes in JSON format
  */
-list = () => {
+const list = () => {
   const notes = _loadNotes()
 
   print.s('Your notes')
@@ -55,7 +55,7 @@ list = () => {
  * @param {string} title - the title of the note to read
  * @returns {object} the JSON of the chosen note
  */
-read = (title) => {
+const read = (title) => {
   const notes = _loadNotes()
   const theNote = _isPresent(notes, title) 
 
@@ -73,7 +73,7 @@ read = (title) => {
  * @param {string} title - the title of the new note
  * @param {string} body - the body of the new note
  */
-add = (title, body) => {
+const add = (title, body) => {
   const notes = _loadNotes()
 
   if (_isPresent(notes, title)) {
@@ -95,7 +95,7 @@ add = (title, body) => {
  * 
  * @param {string} title - the title to look for
  */
-remove = (title) => {
+const remove = (title) => {
   const notes = _loadNotes()
   
   if (!_isPresent(notes, title)) {
