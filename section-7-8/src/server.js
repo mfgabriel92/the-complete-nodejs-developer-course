@@ -19,6 +19,21 @@ app.get('', (req, res) => {
   })
 })
 
+app.get('/weather', (req, res) => {
+  const { address } = req.query
+
+  if (!address) {
+    return res.send({
+      code: 400,
+      error: 'The address must be provided'
+    })
+  }
+
+  res.send({
+    address,
+  })
+})
+
 app.get('/about', (req, res) => {
   res.render('about', {
     title: 'About',
