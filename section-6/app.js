@@ -11,12 +11,14 @@ myGeolocation(city, (err, gData) => {
     return console.error(err)
   }
 
-  myForecast(gData.lat, gData.lng, (err, fData) => {
+  myForecast(gData, (err, fData) => {
     if (err) {
       return console.error(err)
     }
 
-    console.log(gData.location)
+    const { location } = gData
+
+    console.log(location)
     console.log(fData)
   })
 })
