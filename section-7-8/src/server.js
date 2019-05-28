@@ -1,6 +1,7 @@
 const express = require('express')
 const path = require('path')
 const hbs = require('hbs')
+const { myGeolocation, myForecast } = require('./utils')
 const app = express()
 const publicDir = path.join(__dirname, '../public')
 const viewsDir = path.join(__dirname, '../template/views')
@@ -29,21 +30,27 @@ app.get('/weather', (req, res) => {
     })
   }
 
-  res.send({
-    address,
-  })
-})
+  myGeolocation(address, (err, { lat, lng, location }) => {
+    if (err) {
+      return res.send({
+        code: 400,
+        err
+      })
+    }
 
-app.get('/about', (req, res) => {
-  res.render('about', {
-    title: 'About',
-  })
-})
+    myForecast(lat, lng, (err, data) => {
+      if (err) {
+        return res.send({
+          code: 400,
+          err
+        })
+      }
 
-app.get('/help', (req, res) => {
-  res.render('help', {
-    title: 'Help',
-    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+      res.send({
+        location,
+        forecast: data
+      })
+    })
   })
 })
 
