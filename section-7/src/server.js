@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 
 app.get('', (req, res) => {
-  res.send('Hello, ExpressJS!')
+  res.send('<h1>Hello, ExpressJS!</h1>')
 })
 
 app.get('/help', (req, res) => {
@@ -10,7 +10,9 @@ app.get('/help', (req, res) => {
 })
 
 app.get('/about', (req, res) => {
-  res.send('About!')
+  res.send({
+    name: 'Foo'
+  })
 })
 
 app.get('/weather', (req, res) => {
