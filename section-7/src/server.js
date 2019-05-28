@@ -2,8 +2,10 @@ const express = require('express')
 const path = require('path')
 const app = express()
 const publicDir = path.join(__dirname, '../public')
+const templatesDir = path.join(__dirname, '../template')
 
 app.set('view engine', 'hbs')
+app.set('views', templatesDir)
 app.use(express.static(publicDir))
 
 app.get('', (req, res) => {
