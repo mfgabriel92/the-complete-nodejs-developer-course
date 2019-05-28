@@ -1,8 +1,22 @@
 const request = require('request')
-const geolocation = require('./geolocation')
-const url = 'https://api.darksky.net/forecast/cd57fe79e2564946b0d85bb64c0f9f05/37.8267,-122.4233?units=si&lang=pt'
+const { myGeolocation, myForecast } = require('./utils')
+const city = process.argv[2]
 
-geolocation.myGeolocation('Novo Hamburgo', (err, data) => {
-  console.log(err)
-  console.log(data)
+if (!city) {
+  return console.error('Please, provide a city')
+}
+
+myGeolocation(city, (err, gData) => {
+  if (err) {
+    return console.error(err)
+  }
+
+  myForecast(gData.lat, gData.lng, (err, fData) => {
+    if (err) {
+      return console.error(err)
+    }
+
+    console.log(gData.location)
+    console.log(fData)
+  })
 })
