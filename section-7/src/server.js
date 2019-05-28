@@ -1,31 +1,39 @@
 const express = require('express')
 const path = require('path')
+const hbs = require('hbs')
 const app = express()
 const publicDir = path.join(__dirname, '../public')
-const templatesDir = path.join(__dirname, '../template')
+const viewsDir = path.join(__dirname, '../template/views')
+const partialsDir = path.join(__dirname, '../template/partials')
+
+hbs.registerPartials(partialsDir)
 
 app.set('view engine', 'hbs')
-app.set('views', templatesDir)
+app.set('views', viewsDir)
 app.use(express.static(publicDir))
 
 app.get('', (req, res) => {
   res.render('index', {
-    title: 'Index title rendered dynamically',
+    title: 'Index',
     name: 'Gabriel'
   })
 })
 
 app.get('/about', (req, res) => {
   res.render('about', {
-    title: 'About title rendered dynamically',
+    title: 'About',
   })
 })
 
 app.get('/help', (req, res) => {
   res.render('help', {
-    title: 'Help!',
+    title: 'Help',
     body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
   })
+})
+
+app.get('*', (req, res) => {
+  res.render('404')
 })
 
 app.listen(3000, () => {
