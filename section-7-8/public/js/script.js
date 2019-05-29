@@ -9,6 +9,8 @@ function populateResults(msg) {
 form.addEventListener('submit', (e) => {
   e.preventDefault()
   
+  result.innerHTML = 'Loading'
+
   fetch(`/weather?address=${input.value}`).then(res => {
     res.json().then(data => {
       if (data.error) {
