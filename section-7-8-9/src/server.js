@@ -55,6 +55,18 @@ app.get('/weather', (req, res) => {
   })
 })
 
+app.get('/about', (req, res) => {
+  res.render('about', {
+    title: 'About'
+  })
+})
+
+app.get('/help', (req, res) => {
+  res.render('help', {
+    title: 'Help, I need somebody, help'
+  })
+})
+
 app.get('*', (req, res) => {
   res.render('404')
 })
