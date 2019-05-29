@@ -30,7 +30,7 @@ app.get('/weather', (req, res) => {
     })
   }
 
-  myGeolocation(address, (err, { lat, lng, location }) => {
+  myGeolocation(address, (err, { lat, lng, location } = {}) => {
     if (err) {
       return res.send({
         code: 400,

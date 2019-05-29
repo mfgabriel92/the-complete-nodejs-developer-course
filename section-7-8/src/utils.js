@@ -11,13 +11,13 @@ const myGeolocation = (cityName, callback) => {
 
   request({ url, json: true }, (err, { body }) => {
     if (err) {
-      return callback(err, {})
+      return callback(err)
     }
 
     const { features } = body
 
     if (features.length === 0) {
-      return callback('A problem has happened', {})
+      return callback('A problem has happened')
     }
 
     const { center, place_name } = features[0]
@@ -43,13 +43,13 @@ const myForecast = (lat, lng, callback) => {
 
   request({ url, json: true }, (err, { body }) => {
     if (err) {
-      return callback(err, {})
+      return callback(err)
     }
 
     const { error, currently } = body
 
     if (error) {
-      return callback(error, {})
+      return callback(error)
     }
 
     callback(undefined, currently)
