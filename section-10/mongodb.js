@@ -1,5 +1,4 @@
-const mongodb = require('mongodb')
-const Mongo = mongodb.MongoClient
+const Mongo = require('mongodb').MongoClient
 
 Mongo.connect('mongodb://127.0.0.1:27017', { useNewUrlParser: true }, (error, client) => {
   if (error) {
@@ -8,8 +7,24 @@ Mongo.connect('mongodb://127.0.0.1:27017', { useNewUrlParser: true }, (error, cl
 
   const database = client.db('task-manager')
 
-  database.collection('users').insertOne({
-    name: 'Gabriel',
-    age: 26
+  database.collection('tasks').insertMany([
+    {
+      description: 'Lorem ipsum dolor',
+      completed: true
+    },
+    {
+      description: 'Lorem ipsum dolor',
+      completed: true
+    },
+    {
+      description: 'Lorem ipsum dolor',
+      completed: false
+    }
+  ], (error, result) => {
+    if (error) {
+      return console.log(error)
+    }
+
+    console.log(result.ops)
   })
 })
