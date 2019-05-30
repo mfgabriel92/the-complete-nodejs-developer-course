@@ -9,30 +9,19 @@ MongoClient.connect('mongodb://127.0.0.1:27017', { useNewUrlParser: true }, (err
 
   const database = client.db('task-manager')
 
-  database.collection('users').updateOne({ 
-    _id: new ObjectID('5cef21f9e30f4b095fb929df')
-  }, {
-    $set: {
-      name: 'Michael',
-    },
-    $inc: {
-      age: 1
-    }
-  }).then(result => {
-    console.log(result)
-  }).catch(error => {
-    console.log(error)
+  database.collection('users').deleteMany({
+    age: 7
+  }).then(r => {
+    console.log('Success!')
+  }).catch(e => {
+    console.log('Error!')
   })
 
-  database.collection('tasks').updateMany({
-    completed: false
-  }, {
-    $set: {
-      completed: true
-    }
-  }).then(result => {
-    console.log(result)
-  }).catch(error => {
-    console.log(error)
+  database.collection('tasks').deleteOne({
+    _id: new ObjectID('5cef243b1d64ca0dc844422d')
+  }).then(r => {
+    console.log('Success!')
+  }).catch(e => {
+    console.log('Error!')
   })
 })
