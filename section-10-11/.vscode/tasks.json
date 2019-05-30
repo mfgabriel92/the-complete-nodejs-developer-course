@@ -8,6 +8,11 @@
             "type": "shell",
             "command": "/home/gabriel/.mongodb/bin/mongod --dbpath=/home/gabriel/.mgdb/db",
             "problemMatcher": []
+        },
+        {
+            "type": "npm",
+            "script": "dev",
+            "problemMatcher": []
         }
     ]
 }
