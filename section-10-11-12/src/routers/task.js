@@ -1,10 +1,11 @@
 const express = require('express')
+const auth = require('../middleware/auth')
 const { Task, fillableFields } = require('../models/task')
 const HTTP = require('../utils/httpCodes')
 const isValid = require('../utils/checkFields')
 const router = new express.Router()
 
-router.get('/api/tasks', async ({ body }, res) => {
+router.get('/api/tasks', auth, async ({ body }, res) => {
   try {
     res.send(await Task.find({}))
   } catch (e) {

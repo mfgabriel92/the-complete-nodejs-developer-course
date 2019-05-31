@@ -1,4 +1,5 @@
 const express = require('express')
+const auth = require('../middleware/auth')
 const { User, fillableFields } = require('../models/user')
 const HTTP = require('../utils/httpCodes')
 const isValid = require('../utils/checkFields')
@@ -16,6 +17,10 @@ router.post('/api/users/login', async ({ body }, res) => {
   }
 })
 
+router.get('/api/users/me', auth, async ({ user }, res) => {
+  res.send(user)
+})
+
 router.post('/api/users', async ({ body }, res) => {
   if (!isValid(body, fillableFields)) {
     return res.status(HTTP.BAD_REQUEST).send('Invalid fields')
@@ -31,7 +36,7 @@ router.post('/api/users', async ({ body }, res) => {
   }
 })
 
-router.patch('/api/users/:id', async ({ params, body }, res) => {
+router.patch('/api/users/:id', auth, async ({ params, body }, res) => {
   try {
     const user = await User.findByIdAndUpdate(params.id, body, { new: true, runValidators: true })
 
