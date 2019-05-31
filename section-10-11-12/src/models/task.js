@@ -1,5 +1,6 @@
 const { model } = require('mongoose')
-const validator = require('validator')
+
+const fillableFields = ['description', 'completed', 'priority']
 
 const Task = model('Task', {
   description: { type: String, required: true },
@@ -14,4 +15,4 @@ const Task = model('Task', {
   updatedAt: { type: Date, default: Date.now()},
 })
 
-module.exports = Task
+module.exports = { Task, fillableFields }

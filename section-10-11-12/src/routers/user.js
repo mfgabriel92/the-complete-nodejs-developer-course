@@ -1,9 +1,14 @@
 const express = require('express')
-const User = require('../models/user')
+const { User, fillableFields } = require('../models/user')
 const HTTP = require('../utils/httpCodes')
+const { isValid } = require('../utils/checkFields')
 const router = new express.Router()
 
 router.post('/api/users', async ({ body }, res) => {
+  if (!isValid(body, fillableFields)) {
+    return res.status(HTTP.BAD_REQUEST).send('Invalid fields')
+  }
+
   try {
     const user = await new User(body).save()
     res.status(HTTP.CREATED).send(user)

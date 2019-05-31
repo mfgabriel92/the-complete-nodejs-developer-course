@@ -1,6 +1,7 @@
 const express = require('express')
-const Task = require('../models/task')
+const { Task, fillableFields } = require('../models/task')
 const HTTP = require('../utils/httpCodes')
+const { isValid } = require('../utils/checkFields')
 const router = new express.Router()
 
 router.get('/api/tasks', async ({ body }, res) => {
@@ -26,6 +27,10 @@ router.get('/api/tasks/:id', async ({ params }, res) => {
 })
 
 router.post('/api/tasks', async ({ body }, res) => {
+  if (!isValid(body, fillableFields)) {
+    return res.status(HTTP.BAD_REQUEST).send('Invalid fields')
+  }
+
   try {
     const task = await new Task(body).save()
     res.status(HTTP.CREATED).send(task)
