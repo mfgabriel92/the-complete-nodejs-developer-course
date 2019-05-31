@@ -5,13 +5,40 @@ const HTTP = require('../utils/httpCodes')
 const isValid = require('../utils/checkFields')
 const router = new express.Router()
 
-router.post('/api/users/login', async ({ body }, res) => {
+router.post('/api/users/login', async (req, res) => {
+  const { email, password } = req.body
+
   try {
-    const { email, password } = body
     const user = await User.findByEmailAndPassword(email, password)
     const token = await user.generateAuthToken()
 
     res.send({ user, token })
+  } catch (e) {
+    res.status(HTTP.BAD_REQUEST).send(e.message)
+  }
+})
+
+router.post('/api/users/logout', auth, async (req, res) => {
+  const { user, token } = req
+
+  try {
+    user.tokens = user.tokens.filter((t) => t.token !== token)
+    await user.save()
+
+    res.send()
+  } catch (e) {
+    res.status(HTTP.BAD_REQUEST).send(e.message)
+  }
+})
+
+router.post('/api/users/logoutAll', auth, async (req, res) => {
+  const { user, token } = req
+
+  try {
+    user.tokens = []
+    await user.save()
+
+    res.send()
   } catch (e) {
     res.status(HTTP.BAD_REQUEST).send(e.message)
   }
@@ -36,7 +63,9 @@ router.post('/api/users', async ({ body }, res) => {
   }
 })
 
-router.patch('/api/users/:id', auth, async ({ params, body }, res) => {
+router.patch('/api/users/:id', auth, async (req, res) => {
+  const { params, body } = req
+
   try {
     const user = await User.findByIdAndUpdate(params.id, body, { new: true, runValidators: true })
 

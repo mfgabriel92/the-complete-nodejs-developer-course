@@ -5,7 +5,7 @@ const HTTP = require('../utils/httpCodes')
 const isValid = require('../utils/checkFields')
 const router = new express.Router()
 
-router.get('/api/tasks', auth, async ({ body }, res) => {
+router.get('/api/tasks', auth, async (req, res) => {
   try {
     res.send(await Task.find({}))
   } catch (e) {
@@ -40,7 +40,9 @@ router.post('/api/tasks', async ({ body }, res) => {
   }
 })
 
-router.patch('/api/tasks/:id', async ({ params, body }, res) => {
+router.patch('/api/tasks/:id', async (req, res) => {
+  const { params, body } = req
+
   try {
     const task = await Task.findByIdAndUpdate(params.id, body, { new: true, runValidators: true })
 
