@@ -8,8 +8,9 @@ router.post('/api/users/login', async ({ body }, res) => {
   try {
     const { email, password } = body
     const user = await User.findByEmailAndPassword(email, password)
-    
-    res.send(user)
+    const token = await user.generateAuthToken()
+
+    res.send({ user, token })
   } catch (e) {
     res.status(HTTP.BAD_REQUEST).send(e.message)
   }
@@ -22,7 +23,9 @@ router.post('/api/users', async ({ body }, res) => {
 
   try {
     const user = await new User(body).save()
-    res.status(HTTP.CREATED).send(user)
+    const token = await user.generateAuthToken()
+
+    res.status(HTTP.CREATED).send({ user, token })
   } catch (e) {
     res.status(HTTP.BAD_REQUEST).send(e.message)
   }

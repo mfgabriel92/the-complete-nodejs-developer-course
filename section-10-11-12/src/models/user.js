@@ -1,6 +1,7 @@
 const { model, Schema } = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 const fillableFields = ['name', 'email', 'age', 'password']
 
@@ -26,16 +27,28 @@ const userSchema = new Schema({
     require: true,
     minlength: [8, 'Password must contain more than 8 characters']
   },
+  tokens: [{
+    token: { type: String, requires: true }
+  }],
   createdAt: { type: Date, default: Date.now() },
   updatedAt: { type: Date, default: Date.now() },
 })
 
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(this.password, 8)
   }
   next()
 })
+
+userSchema.methods.generateAuthToken = async function () {
+  const token = jwt.sign({ _id: this._id.toString() }, '10qpalzmxnsjwi29')
+
+  this.tokens = this.tokens.concat({ token })
+  await this.save()
+
+  return token
+}
 
 userSchema.statics.findByEmailAndPassword = async (email, password) => {
   const user = await User.findOne({ email })
