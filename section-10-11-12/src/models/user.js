@@ -8,6 +8,7 @@ const userSchema = new Schema({
   name: { type: String, trim: true },
   email: {
     type: String,
+    unique: true,
     require: true,
     trim: true,
     lowercase: true,
@@ -35,6 +36,22 @@ userSchema.pre('save', async function(next) {
   }
   next()
 })
+
+userSchema.statics.findByEmailAndPassword = async (email, password) => {
+  const user = await User.findOne({ email })
+
+  if (!user) {
+    throw new Error('User not found')
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password)
+
+  if (!isMatch) {
+    throw new Error('Wrong credentials')
+  }
+
+  return user
+}
 
 const User = model('User', userSchema)
 
