@@ -3,6 +3,4 @@ const isValid = (body, fillableFields) => {
   return fields.every(field => fillableFields.includes(field))
 }
 
-module.exports = {
-  isValid
-}
+module.exports = isValid

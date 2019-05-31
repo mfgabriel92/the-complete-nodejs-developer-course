@@ -1,7 +1,7 @@
 const express = require('express')
 const { Task, fillableFields } = require('../models/task')
 const HTTP = require('../utils/httpCodes')
-const { isValid } = require('../utils/checkFields')
+const isValid = require('../utils/checkFields')
 const router = new express.Router()
 
 router.get('/api/tasks', async ({ body }, res) => {

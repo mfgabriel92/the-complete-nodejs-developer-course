@@ -1,7 +1,7 @@
 const express = require('express')
 const { User, fillableFields } = require('../models/user')
 const HTTP = require('../utils/httpCodes')
-const { isValid } = require('../utils/checkFields')
+const isValid = require('../utils/checkFields')
 const router = new express.Router()
 
 router.post('/api/users/login', async ({ body }, res) => {

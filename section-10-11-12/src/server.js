@@ -1,5 +1,6 @@
 require('./db/mongoose')
 
+const checkAuth = require('./middlewares/checkAuth')
 const express = require('express')
 const user = require('./routers/user')
 const task = require('./routers/task')
@@ -7,6 +8,7 @@ const task = require('./routers/task')
 const app = express()
 const port = process.env.PORT || 3000
 
+app.use((req, res, next) => checkAuth(req, res, next))
 app.use(express.json())
 app.use(user)
 app.use(task)
