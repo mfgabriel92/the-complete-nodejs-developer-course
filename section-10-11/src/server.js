@@ -54,10 +54,7 @@ app.patch('/api/users/:id', async ({ params, body }, res) => {
     const user = await User.findByIdAndUpdate(params.id, body, { new: true, runValidators: true })
 
     if (!user) {
-      return res.status(HTTP.NOT_FOUND).send({
-        code: HTTP.NOT_FOUND,
-        error: 'User not found'
-      })
+      return res.status(HTTP.NOT_FOUND).send('User not found')
     }
 
     res.send(user)
@@ -71,13 +68,24 @@ app.patch('/api/tasks/:id', async ({ params, body }, res) => {
     const task = await Task.findByIdAndUpdate(params.id, body, { new: true, runValidators: true })
 
     if (!task) {
-      return res.status(HTTP.NOT_FOUND).send({
-        code: HTTP.NOT_FOUND,
-        error: 'Task not found'
-      })
+      return res.status(HTTP.NOT_FOUND).send('Task not found')
     }
 
     res.send(task)
+  } catch (e) {
+    res.status(HTTP.BAD_REQUEST).send(e.message)
+  }
+})
+
+app.delete('/api/tasks/:id', async ({ params }, res) => {
+  try {
+    const task = await Task.findByIdAndRemove(params.id)
+
+    if (!task) {
+      return res.status(HTTP.NOT_FOUND).send('Task not found')
+    }
+
+    res.send('Task deleted')
   } catch (e) {
     res.status(HTTP.BAD_REQUEST).send(e.message)
   }
