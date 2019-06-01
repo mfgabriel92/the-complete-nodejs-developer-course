@@ -13,7 +13,7 @@ router.get('/api/tasks', auth, async (req, res) => {
   }
 })
 
-router.get('/api/tasks/:id', async ({ params }, res) => {
+router.get('/api/tasks/:id', auth, async ({ params }, res) => {
   try {
     const task = await Task.findById(params.id)
 
@@ -27,7 +27,7 @@ router.get('/api/tasks/:id', async ({ params }, res) => {
   }
 })
 
-router.post('/api/tasks', async ({ body }, res) => {
+router.post('/api/tasks', auth, async ({ body }, res) => {
   if (!isValid(body, fillableFields)) {
     return res.status(HTTP.BAD_REQUEST).send('Invalid fields')
   }
@@ -40,7 +40,7 @@ router.post('/api/tasks', async ({ body }, res) => {
   }
 })
 
-router.patch('/api/tasks/:id', async (req, res) => {
+router.patch('/api/tasks/:id', auth, async (req, res) => {
   const { params, body } = req
 
   try {
@@ -56,7 +56,7 @@ router.patch('/api/tasks/:id', async (req, res) => {
   }
 })
 
-router.delete('/api/tasks/:id', async ({ params }, res) => {
+router.delete('/api/tasks/:id', auth, async ({ params }, res) => {
   try {
     const task = await Task.findByIdAndRemove(params.id)
 

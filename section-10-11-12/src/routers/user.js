@@ -63,15 +63,16 @@ router.post('/api/users', async ({ body }, res) => {
   }
 })
 
-router.patch('/api/users/:id', auth, async (req, res) => {
-  const { params, body } = req
+router.patch('/api/users/me', auth, async (req, res) => {
+  const { body, user } = req
+
+  if (!isValid(body, fillableFields)) {
+    return res.status(HTTP.BAD_REQUEST).send('Invalid fields')
+  }
 
   try {
-    const user = await User.findByIdAndUpdate(params.id, body, { new: true, runValidators: true })
-
-    if (!user) {
-      return res.status(HTTP.NOT_FOUND).send('User not found')
-    }
+    Object.keys(body).forEach(update => user[update] = body[update])
+    await user.save()
 
     res.send(user)
   } catch (e) {
