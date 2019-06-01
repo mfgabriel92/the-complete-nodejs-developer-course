@@ -31,8 +31,8 @@ const userSchema = new Schema({
   tokens: [{
     token: { type: String, requires: true }
   }],
-  createdAt: { type: Date, default: Date.now() },
-  updatedAt: { type: Date, default: Date.now() },
+}, {
+  timestamps: true
 })
 
 userSchema.pre('save', async function (next) {
