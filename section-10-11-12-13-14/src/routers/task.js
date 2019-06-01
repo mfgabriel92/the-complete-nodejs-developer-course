@@ -25,7 +25,7 @@ router.get('/api/tasks', auth, async ({ user, query }, res) => {
 
     res.send(tasks)
   } catch (e) {
-    res.status(HTTP.BAD_REQUEST).send(e.message)
+    res.status(HTTP.BAD_REQUEST).send({ error: e.message })
   }
 })
 
@@ -39,7 +39,7 @@ router.get('/api/tasks/:id', auth, async ({ params, user }, res) => {
 
     res.send(task)
   } catch (e) {
-    res.status(HTTP.BAD_REQUEST).send(e.message)
+    res.status(HTTP.BAD_REQUEST).send({ error: e.message })
   }
 })
 
@@ -57,7 +57,7 @@ router.post('/api/tasks', auth, async ({ body, user }, res) => {
     await task.save()
     res.status(HTTP.CREATED).send(task)
   } catch (e) {
-    res.status(HTTP.BAD_REQUEST).send(e.message)
+    res.status(HTTP.BAD_REQUEST).send({ error: e.message })
   }
 })
 
@@ -80,7 +80,7 @@ router.patch('/api/tasks/:id', auth, async (req, res) => {
 
     res.send(task)
   } catch (e) {
-    res.status(HTTP.BAD_REQUEST).send(e.message)
+    res.status(HTTP.BAD_REQUEST).send({ error: e.message })
   }
 })
 
@@ -94,7 +94,7 @@ router.delete('/api/tasks/:id', auth, async ({ params, user }, res) => {
 
     res.send()
   } catch (e) {
-    res.status(HTTP.BAD_REQUEST).send(e.message)
+    res.status(HTTP.BAD_REQUEST).send({ error: e.message })
   }
 })
 

@@ -101,6 +101,6 @@ router.post('/api/users/me/picture', upload, async ({ user }, res) => {
   // try {
   // } catch (e) {
   // }
-})
+}, (error, req, res, next) => res.status(HTTP.BAD_REQUEST).send({ error: error }))
 
 module.exports = router
