@@ -5,10 +5,16 @@ const HTTP = require('../utils/httpCodes')
 const isValid = require('../utils/checkFields')
 const router = new express.Router()
 
-router.get('/api/tasks', auth, async ({ user }, res) => {
-  try {
-    const { tasks } = await user.populate('tasks').execPopulate()
+router.get('/api/tasks', auth, async (req, res) => {
+  const { user, query } = req
+  const match = {}
 
+  if (query.completed) {
+    match.completed = query.completed === 'true'
+  }
+
+  try {
+    const { tasks } = await user.populate({ path: 'tasks', match }).execPopulate()
     res.send(tasks)
   } catch (e) {
     res.status(HTTP.BAD_REQUEST).send(e.message)
