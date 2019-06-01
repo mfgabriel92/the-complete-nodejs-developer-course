@@ -5,17 +5,21 @@ const HTTP = require('../utils/httpCodes')
 const isValid = require('../utils/checkFields')
 const router = new express.Router()
 
-router.get('/api/tasks', auth, async (req, res) => {
+router.get('/api/tasks', auth, async ({ user }, res) => {
   try {
-    res.send(await Task.find({}))
+    const { tasks } = await user.populate('tasks').execPopulate()
+
+    res.send(tasks)
   } catch (e) {
     res.status(HTTP.BAD_REQUEST).send(e.message)
   }
 })
 
-router.get('/api/tasks/:id', auth, async ({ params }, res) => {
+router.get('/api/tasks/:id', auth, async (req, res) => {
+  const { params, user } = req
+
   try {
-    const task = await Task.findById(params.id)
+    const task = await Task.findOne({ _id: params.id, user: user._id })
 
     if (!task) {
       return res.status(HTTP.NOT_FOUND).send('Task not found')
@@ -27,13 +31,20 @@ router.get('/api/tasks/:id', auth, async ({ params }, res) => {
   }
 })
 
-router.post('/api/tasks', auth, async ({ body }, res) => {
+router.post('/api/tasks', auth, async (req, res) => {
+  const { body, user } = req
+  
   if (!isValid(body, fillableFields)) {
     return res.status(HTTP.BAD_REQUEST).send('Invalid fields')
   }
 
+  const task = new Task({
+    ...body,
+    user: user._id
+  })
+
   try {
-    const task = await new Task(body).save()
+    await task.save()
     res.status(HTTP.CREATED).send(task)
   } catch (e) {
     res.status(HTTP.BAD_REQUEST).send(e.message)
@@ -41,14 +52,21 @@ router.post('/api/tasks', auth, async ({ body }, res) => {
 })
 
 router.patch('/api/tasks/:id', auth, async (req, res) => {
-  const { params, body } = req
+  const { params, body, user } = req
+
+  if (!isValid(body, fillableFields)) {
+    return res.status(HTTP.BAD_REQUEST).send('Invalid fields')
+  }
 
   try {
-    const task = await Task.findByIdAndUpdate(params.id, body, { new: true, runValidators: true })
+    const task = await Task.findOne({ _id: params.id, user: user._id })
 
     if (!task) {
       return res.status(HTTP.NOT_FOUND).send('Task not found')
     }
+
+    Object.keys(body).forEach(field => task[field] = body[field])
+    await task.save()
 
     res.send(task)
   } catch (e) {
@@ -56,15 +74,17 @@ router.patch('/api/tasks/:id', auth, async (req, res) => {
   }
 })
 
-router.delete('/api/tasks/:id', auth, async ({ params }, res) => {
+router.delete('/api/tasks/:id', auth, async (req, res) => {
+  const { params, user } = req
+
   try {
-    const task = await Task.findByIdAndRemove(params.id)
+    const task = await Task.findOneAndDelete({ _id: params.id, user: user._id })
 
     if (!task) {
       return res.status(HTTP.NOT_FOUND).send('Task not found')
     }
 
-    res.send('Task deleted')
+    res.send()
   } catch (e) {
     res.status(HTTP.BAD_REQUEST).send(e.message)
   }
