@@ -1,9 +1,13 @@
 const express = require('express')
+const multer = require('multer')
 const auth = require('../middleware/auth')
 const { User, fillableFields } = require('../models/user')
 const HTTP = require('../utils/httpCodes')
 const isValid = require('../utils/checkFields')
 const router = new express.Router()
+const upload = multer({
+  dest: 'profile-pictures'
+}).single('file')
 
 router.post('/api/users/login', async (req, res) => {
   const { email, password } = req.body
@@ -87,6 +91,13 @@ router.delete('/api/users/me', auth, async ({ user }, res) => {
   } catch (e) {
     res.status(HTTP.BAD_REQUEST).send(e.message)
   }
+})
+
+router.post('/api/users/me/picture', upload, async ({ user }, res) => {
+  res.send()
+  // try {
+  // } catch (e) {
+  // }
 })
 
 module.exports = router
