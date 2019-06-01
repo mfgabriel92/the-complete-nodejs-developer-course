@@ -5,9 +5,7 @@ const HTTP = require('../utils/httpCodes')
 const isValid = require('../utils/checkFields')
 const router = new express.Router()
 
-router.get('/api/tasks', auth, async (req, res) => {
-  const { user, query } = req
-
+router.get('/api/tasks', auth, async ({ user, query }, res) => {
   let match = {}
   let sortBy
 
@@ -31,9 +29,7 @@ router.get('/api/tasks', auth, async (req, res) => {
   }
 })
 
-router.get('/api/tasks/:id', auth, async (req, res) => {
-  const { params, user } = req
-
+router.get('/api/tasks/:id', auth, async ({ params, user }, res) => {
   try {
     const task = await Task.findOne({ _id: params.id, user: user._id })
 
@@ -47,9 +43,7 @@ router.get('/api/tasks/:id', auth, async (req, res) => {
   }
 })
 
-router.post('/api/tasks', auth, async (req, res) => {
-  const { body, user } = req
-  
+router.post('/api/tasks', auth, async ({ body, user }, res) => {
   if (!isValid(body, fillableFields)) {
     return res.status(HTTP.BAD_REQUEST).send('Invalid fields')
   }
@@ -90,9 +84,7 @@ router.patch('/api/tasks/:id', auth, async (req, res) => {
   }
 })
 
-router.delete('/api/tasks/:id', auth, async (req, res) => {
-  const { params, user } = req
-
+router.delete('/api/tasks/:id', auth, async ({ params, user }, res) => {
   try {
     const task = await Task.findOneAndDelete({ _id: params.id, user: user._id })
 
