@@ -38,9 +38,18 @@ userSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(this.password, 8)
   }
-  
+
   next()
 })
+
+userSchema.methods.toJSON = function () { 
+  const obj = this.toObject()
+
+  delete obj.password
+  delete obj.tokens
+
+  return obj
+}
 
 userSchema.methods.generateAuthToken = async function () {
   const token = jwt.sign({ _id: this._id.toString() }, '10qpalzmxnsjwi29')
