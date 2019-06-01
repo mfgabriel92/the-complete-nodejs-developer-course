@@ -4,9 +4,12 @@ const auth = require('../middleware/auth')
 const { User, fillableFields } = require('../models/user')
 const HTTP = require('../utils/httpCodes')
 const isValid = require('../utils/checkFields')
+const checkIsImage = require('../utils/check-is-image')
 const router = new express.Router()
 const upload = multer({
-  dest: 'profile-pictures'
+  dest: 'profile-pictures',
+  limits: { fileSize: 1000000 },
+  fileFilter(r, f, c) { checkIsImage(r, f, c) }
 }).single('file')
 
 router.post('/api/users/login', async (req, res) => {
