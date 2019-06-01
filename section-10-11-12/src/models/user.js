@@ -2,6 +2,7 @@ const { model, Schema } = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const { Task } = require('./task')
 
 const fillableFields = ['name', 'email', 'age', 'password']
 
@@ -42,13 +43,18 @@ userSchema.pre('save', async function (next) {
   next()
 })
 
-userSchema.virtual('tasks', { 
-  ref: 'Task' ,
+userSchema.pre('delete', async function (next) {
+  await Task.deleteMany({ user: this._id })
+  next()
+})
+
+userSchema.virtual('tasks', {
+  ref: 'Task',
   localField: '_id',
   foreignField: 'user'
 })
 
-userSchema.methods.toJSON = function () { 
+userSchema.methods.toJSON = function () {
   const obj = this.toObject()
 
   delete obj.password

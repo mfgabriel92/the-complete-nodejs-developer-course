@@ -80,4 +80,13 @@ router.patch('/api/users/me', auth, async (req, res) => {
   }
 })
 
+router.delete('/api/users/me', auth, async ({ user }, res) => {
+  try {
+    await user.delete()
+    res.send()
+  } catch (e) {
+    res.status(HTTP.BAD_REQUEST).send(e.message)
+  }
+})
+
 module.exports = router
