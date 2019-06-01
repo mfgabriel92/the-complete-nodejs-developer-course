@@ -14,7 +14,15 @@ router.get('/api/tasks', auth, async (req, res) => {
   }
 
   try {
-    const { tasks } = await user.populate({ path: 'tasks', match }).execPopulate()
+    const { tasks } = await user.populate({
+      path: 'tasks', 
+      match,
+      options: {
+        limit: parseInt(query.limit) || 10,
+        skip: parseInt(query.skip) || 0
+      } 
+    }).execPopulate()
+
     res.send(tasks)
   } catch (e) {
     res.status(HTTP.BAD_REQUEST).send(e.message)
