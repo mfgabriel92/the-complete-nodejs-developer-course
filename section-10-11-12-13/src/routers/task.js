@@ -7,11 +7,12 @@ const router = new express.Router()
 
 router.get('/api/tasks', auth, async (req, res) => {
   const { user, query } = req
-  const match = {}
 
-  if (query.completed) {
-    match.completed = query.completed === 'true'
-  }
+  let match = {}
+  let sortBy
+
+  if (query.completed) match.completed = query.completed === 'true'
+  if (query.sort) sortBy = query.sort.split(':')
 
   try {
     const { tasks } = await user.populate({
@@ -19,7 +20,8 @@ router.get('/api/tasks', auth, async (req, res) => {
       match,
       options: {
         limit: parseInt(query.limit) || 10,
-        skip: parseInt(query.skip) || 0
+        skip: parseInt(query.skip) || 0,
+        sort: { [sortBy[0]]: sortBy[1] }
       } 
     }).execPopulate()
 
