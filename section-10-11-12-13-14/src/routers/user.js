@@ -50,17 +50,17 @@ router.post('/api/users/logoutAll', auth, async (req, res) => {
   }
 })
 
-router.get('/api/users/me', auth, async ({ user }, res) => {
-  res.send(user)
+router.get('/api/users/me', auth, async (req, res) => {
+  res.send(req.user)
 })
 
-router.post('/api/users', async ({ body }, res) => {
-  if (!isValid(body, fillableFields)) {
+router.post('/api/users', async (req, res) => {
+  if (!isValid(req.body, fillableFields)) {
     return res.status(HTTP.BAD_REQUEST).send('Invalid fields')
   }
 
   try {
-    const user = await new User(body).save()
+    const user = await new User(req.body).save()
     const token = await user.generateAuthToken()
 
     res.status(HTTP.CREATED).send({ user, token })
@@ -86,16 +86,18 @@ router.patch('/api/users/me', auth, async (req, res) => {
   }
 })
 
-router.delete('/api/users/me', auth, async ({ user }, res) => {
+router.delete('/api/users/me', auth, async (req, res) => {
   try {
-    await user.delete()
+    await req.user.delete()
     res.send()
   } catch (e) {
     res.status(HTTP.BAD_REQUEST).send({ error: e.message })
   }
 })
 
-router.post('/api/users/me/picture', auth, upload, async ({ file, user }, res) => {
+router.post('/api/users/me/picture', auth, upload, async (req, res) => {
+  const { file, user } = req
+
   try {
     user.picture = file.buffer
     await user.save()
@@ -106,12 +108,30 @@ router.post('/api/users/me/picture', auth, upload, async ({ file, user }, res) =
   }
 }, (error, req, res, next) => res.status(HTTP.BAD_REQUEST).send({ error: error.message }))
 
-router.delete('/api/users/me/picture', auth, async ({ user }, res) => {
+router.delete('/api/users/me/picture', auth, async (req, res) => {
+  const { user } = req
   try {
     user.picture = null
     await user.save()
 
     res.send()
+  } catch (e) {
+    res.status(HTTP.BAD_REQUEST).send({ error: e.message })
+  }
+})
+
+router.get('/api/users/:id/picture', async (req, res) => {
+  const { params } = req
+
+  try {
+    const user = await User.findById(params.id)
+
+    if (!user || !user.picture) {
+      return res.status(HTTP.NOT_FOUND).send({ error: 'User not found' })
+    }
+
+    res.set('Content-Type', 'image/jpg')
+    res.send(user.picture)
   } catch (e) {
     res.status(HTTP.BAD_REQUEST).send({ error: e.message })
   }
