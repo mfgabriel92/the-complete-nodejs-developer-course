@@ -5,7 +5,7 @@ const HTTP = require('../utils/httpCodes')
 module.exports = async (req, res, next) => {
   try {
     const token = req.header('Authorization').replace('Bearer ', '')
-    const decoded = jwt.verify(token, '10qpalzmxnsjwi29')
+    const decoded = jwt.verify(token, process.env.MONGODB_JWT_SECRET)
     const user = await User.findOne({ _id: decoded._id, 'tokens.token': token })
 
     if (!user) {
