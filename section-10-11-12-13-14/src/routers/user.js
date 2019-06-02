@@ -7,7 +7,6 @@ const isValid = require('../utils/checkFields')
 const checkIsImage = require('../utils/check-is-image')
 const router = new express.Router()
 const upload = multer({
-  dest: 'profile-pictures',
   limits: { fileSize: 1000000 },
   fileFilter(r, f, c) { checkIsImage(r, f, c) }
 }).single('file')
@@ -21,7 +20,7 @@ router.post('/api/users/login', async (req, res) => {
 
     res.send({ user, token })
   } catch (e) {
-    res.status(HTTP.BAD_REQUEST).send(e.message)
+    res.status(HTTP.BAD_REQUEST).send({ error: e.message })
   }
 })
 
@@ -34,7 +33,7 @@ router.post('/api/users/logout', auth, async (req, res) => {
 
     res.send()
   } catch (e) {
-    res.status(HTTP.BAD_REQUEST).send(e.message)
+    res.status(HTTP.BAD_REQUEST).send({ error: e.message })
   }
 })
 
@@ -47,7 +46,7 @@ router.post('/api/users/logoutAll', auth, async (req, res) => {
 
     res.send()
   } catch (e) {
-    res.status(HTTP.BAD_REQUEST).send(e.message)
+    res.status(HTTP.BAD_REQUEST).send({ error: e.message })
   }
 })
 
@@ -66,7 +65,7 @@ router.post('/api/users', async ({ body }, res) => {
 
     res.status(HTTP.CREATED).send({ user, token })
   } catch (e) {
-    res.status(HTTP.BAD_REQUEST).send(e.message)
+    res.status(HTTP.BAD_REQUEST).send({ error: e.message })
   }
 })
 
@@ -83,7 +82,7 @@ router.patch('/api/users/me', auth, async (req, res) => {
 
     res.send(user)
   } catch (e) {
-    res.status(HTTP.BAD_REQUEST).send(e.message)
+    res.status(HTTP.BAD_REQUEST).send({ error: e.message })
   }
 })
 
@@ -92,15 +91,30 @@ router.delete('/api/users/me', auth, async ({ user }, res) => {
     await user.delete()
     res.send()
   } catch (e) {
-    res.status(HTTP.BAD_REQUEST).send(e.message)
+    res.status(HTTP.BAD_REQUEST).send({ error: e.message })
   }
 })
 
-router.post('/api/users/me/picture', upload, async ({ user }, res) => {
-  res.send()
-  // try {
-  // } catch (e) {
-  // }
-}, (error, req, res, next) => res.status(HTTP.BAD_REQUEST).send({ error: error }))
+router.post('/api/users/me/picture', auth, upload, async ({ file, user }, res) => {
+  try {
+    user.picture = file.buffer
+    await user.save()
+
+    res.send()
+  } catch (e) {
+    res.status(HTTP.BAD_REQUEST).send({ error: e.message })
+  }
+}, (error, req, res, next) => res.status(HTTP.BAD_REQUEST).send({ error: error.message }))
+
+router.delete('/api/users/me/picture', auth, async ({ user }, res) => {
+  try {
+    user.picture = null
+    await user.save()
+
+    res.send()
+  } catch (e) {
+    res.status(HTTP.BAD_REQUEST).send({ error: e.message })
+  }
+})
 
 module.exports = router

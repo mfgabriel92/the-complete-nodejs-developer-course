@@ -31,6 +31,7 @@ const userSchema = new Schema({
   tokens: [{
     token: { type: String, requires: true }
   }],
+  picture: { type: Buffer }
 }, {
   timestamps: true
 })
