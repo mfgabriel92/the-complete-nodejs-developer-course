@@ -1,10 +1,12 @@
 const express = require('express')
 const multer = require('multer')
+const sharp = require('sharp')
 const auth = require('../middleware/auth')
 const { User, fillableFields } = require('../models/user')
 const HTTP = require('../utils/httpCodes')
 const isValid = require('../utils/checkFields')
 const checkIsImage = require('../utils/check-is-image')
+const resizeImage = require('../utils/resize-image')
 const router = new express.Router()
 const upload = multer({
   limits: { fileSize: 1000000 },
@@ -99,7 +101,7 @@ router.post('/api/users/me/picture', auth, upload, async (req, res) => {
   const { file, user } = req
 
   try {
-    user.picture = file.buffer
+    user.picture = await resizeImage(file)
     await user.save()
 
     res.send()
@@ -130,7 +132,7 @@ router.get('/api/users/:id/picture', async (req, res) => {
       return res.status(HTTP.NOT_FOUND).send({ error: 'User not found' })
     }
 
-    res.set('Content-Type', 'image/jpg')
+    res.set('Content-Type', 'image/png')
     res.send(user.picture)
   } catch (e) {
     res.status(HTTP.BAD_REQUEST).send({ error: e.message })
