@@ -10,6 +10,13 @@ const publicDir = path.join(__dirname, '../public')
 
 app.use(express.static(publicDir))
 
-io.on('connection', () => { console.log('New websocket connection') })
+let count = 0
+
+io.on('connection', (socket) => {
+  socket.on('increment', () => {
+    count++
+    io.emit('newCount', count)
+  })
+})
 
 module.exports = server
