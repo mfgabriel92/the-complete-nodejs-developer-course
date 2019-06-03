@@ -10,12 +10,10 @@ const publicDir = path.join(__dirname, '../public')
 
 app.use(express.static(publicDir))
 
-let count = 0
-
 io.on('connection', (socket) => {
-  socket.on('increment', () => {
-    count++
-    io.emit('newCount', count)
+  socket.emit('message', 'Welcome!')
+  socket.on('sendMessage', (message) => {
+    io.emit('message', message)
   })
 })
 
