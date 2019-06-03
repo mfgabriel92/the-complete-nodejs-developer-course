@@ -4,8 +4,6 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { Task } = require('./task')
 
-const fillableFields = ['name', 'email', 'age', 'password']
-
 const userSchema = new Schema({
   name: { type: String, trim: true },
   email: {
@@ -92,4 +90,4 @@ userSchema.statics.findByEmailAndPassword = async (email, password) => {
 
 const User = model('User', userSchema)
 
-module.exports = { User, fillableFields }
+module.exports = User

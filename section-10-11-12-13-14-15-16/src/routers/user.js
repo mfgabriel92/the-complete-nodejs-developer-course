@@ -1,9 +1,8 @@
 const express = require('express')
 const multer = require('multer')
 const auth = require('../middleware/auth')
-const { User, fillableFields } = require('../models/user')
+const User = require('../models/user')
 const HTTP = require('../utils/httpCodes')
-const isValid = require('../utils/checkFields')
 const checkIsImage = require('../utils/check-is-image')
 const resizeImage = require('../utils/resize-image')
 const router = new express.Router()
@@ -56,10 +55,6 @@ router.get('/api/users/me', auth, async (req, res) => {
 })
 
 router.post('/api/users', async (req, res) => {
-  if (!isValid(req.body, fillableFields)) {
-    return res.status(HTTP.BAD_REQUEST).send('Invalid fields')
-  }
-
   try {
     const user = await new User(req.body).save()
     const token = await user.generateAuthToken()
@@ -72,10 +67,6 @@ router.post('/api/users', async (req, res) => {
 
 router.patch('/api/users/me', auth, async (req, res) => {
   const { body, user } = req
-
-  if (!isValid(body, fillableFields)) {
-    return res.status(HTTP.BAD_REQUEST).send('Invalid fields')
-  }
 
   try {
     Object.keys(body).forEach(update => user[update] = body[update])

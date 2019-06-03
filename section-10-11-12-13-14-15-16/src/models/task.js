@@ -1,7 +1,5 @@
 const { model, Schema } = require('mongoose')
 
-const fillableFields = ['description', 'completed', 'priority']
-
 const taskSchema = new Schema({
   description: { type: String, required: true },
   completed: { type: Boolean, default: false },
@@ -22,4 +20,4 @@ const taskSchema = new Schema({
 
 const Task = model('Task', taskSchema)
 
-module.exports = { Task, fillableFields }
+module.exports = Task
