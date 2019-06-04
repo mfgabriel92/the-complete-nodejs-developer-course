@@ -11,7 +11,6 @@ const publicDir = path.join(__dirname, '../public')
 app.use(express.static(publicDir))
 
 io.on('connection', (socket) => {
-  socket.emit('message', 'Welcome!')
   socket.on('sendMessage', (message) => {
     io.emit('message', message)
   })
